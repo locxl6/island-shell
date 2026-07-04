@@ -7,8 +7,8 @@ import qs.modules.common.functions
 import qs.modules.common.widgets
 
 QuickToggleModel {
-    name: Translation.tr("Audio input")
-    statusText: toggled ? Translation.tr("Enabled") : Translation.tr("Muted")
+    name: Translation.translate("Audio input")
+    statusText: toggled ? Translation.translate("Enabled") : Translation.translate("Muted")
     toggled: !Audio.source?.audio?.muted
     icon: Audio.source?.audio?.muted ? "mic_off" : "mic"
     mainAction: () => {
@@ -16,5 +16,5 @@ QuickToggleModel {
     }
     hasMenu: true
 
-    tooltipText: Translation.tr("Audio input | Right-click for volume mixer & device selector")
+    tooltipText: Translation.translate("Audio input | Right-click for volume mixer & device selector")
 }

@@ -7,7 +7,7 @@ import qs.modules.common.functions
 import qs.modules.common.widgets
 
 QuickToggleModel {
-    name: Translation.tr("Screen snip")
+    name: Translation.translate("Screen snip")
     hasStatusText: false
     toggled: false
     icon: "screenshot_region"
@@ -25,5 +25,5 @@ QuickToggleModel {
         }
     }
 
-    tooltipText: Translation.tr("Screen snip")
+    tooltipText: Translation.translate("Screen snip")
 }

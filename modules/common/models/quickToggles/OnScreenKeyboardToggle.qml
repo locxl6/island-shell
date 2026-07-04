@@ -7,7 +7,7 @@ import qs.modules.common.functions
 import qs.modules.common.widgets
 
 QuickToggleModel {
-    name: Translation.tr("Virtual Keyboard")
+    name: Translation.translate("Virtual Keyboard")
     toggled: GlobalStates.oskOpen
     icon: toggled ? "keyboard_hide" : "keyboard"
     
@@ -15,5 +15,5 @@ QuickToggleModel {
         GlobalStates.oskOpen = !GlobalStates.oskOpen
     }
 
-    tooltipText: Translation.tr("On-screen keyboard")
+    tooltipText: Translation.translate("On-screen keyboard")
 }

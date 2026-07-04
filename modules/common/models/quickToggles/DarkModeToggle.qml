@@ -7,8 +7,8 @@ import qs.modules.common.functions
 import qs.modules.common.widgets
 
 QuickToggleModel {
-    name: Translation.tr("Dark Mode")
-    statusText: Appearance.m3colors.darkmode ? Translation.tr("Dark") : Translation.tr("Light")
+    name: Translation.translate("Dark Mode")
+    statusText: Appearance.m3colors.darkmode ? Translation.translate("Dark") : Translation.translate("Light")
 
     toggled: Appearance.m3colors.darkmode
     icon: "contrast"
@@ -21,5 +21,5 @@ QuickToggleModel {
         }
     }
 
-    tooltipText: Translation.tr("Dark Mode")
+    tooltipText: Translation.translate("Dark Mode")
 }

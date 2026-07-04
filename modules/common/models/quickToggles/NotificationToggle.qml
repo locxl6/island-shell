@@ -7,8 +7,8 @@ import qs.modules.common.functions
 import qs.modules.common.widgets
 
 QuickToggleModel {
-    name: Translation.tr("Notifications")
-    statusText: toggled ? Translation.tr("Show") : Translation.tr("Silent")
+    name: Translation.translate("Notifications")
+    statusText: toggled ? Translation.translate("Show") : Translation.translate("Silent")
     toggled: !Notifications.silent
     icon: toggled ? "notifications_active" : "notifications_paused"
 
@@ -16,5 +16,5 @@ QuickToggleModel {
         Notifications.silent = !Notifications.silent;
     }
 
-    tooltipText: Translation.tr("Show notifications")
+    tooltipText: Translation.translate("Show notifications")
 }

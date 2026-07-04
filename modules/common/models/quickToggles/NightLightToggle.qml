@@ -9,8 +9,8 @@ import qs.modules.common.widgets
 QuickToggleModel {
     property bool auto: Config.options.light.night.automatic
 
-    name: Translation.tr("Night Light")
-    statusText: (auto ? Translation.tr("Auto, ") : "") + (toggled ? Translation.tr("Active") : Translation.tr("Inactive"))
+    name: Translation.translate("Night Light")
+    statusText: (auto ? Translation.translate("Auto, ") : "") + (toggled ? Translation.translate("Active") : Translation.translate("Inactive"))
 
     toggled: Hyprsunset.temperatureActive
     icon: auto ? "night_sight_auto" : "bedtime"
@@ -24,5 +24,5 @@ QuickToggleModel {
         Hyprsunset.fetchState()
     }
     
-    tooltipText: Translation.tr("Night Light | Right-click to configure")
+    tooltipText: Translation.translate("Night Light | Right-click to configure")
 }

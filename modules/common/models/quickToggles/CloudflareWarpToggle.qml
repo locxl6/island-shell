@@ -8,7 +8,7 @@ import Quickshell.Io
 
 QuickToggleModel {
     id: root
-    name: Translation.tr("Cloudflare WARP")
+    name: Translation.translate("Cloudflare WARP")
 
     toggled: false
     icon: "cloud_lock"
@@ -29,8 +29,8 @@ QuickToggleModel {
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0) {
                 Quickshell.execDetached(["notify-send", 
-                    Translation.tr("Cloudflare WARP"), 
-                    Translation.tr("Connection failed. Please inspect manually with the <tt>warp-cli</tt> command")
+                    Translation.translate("Cloudflare WARP"), 
+                    Translation.translate("Connection failed. Please inspect manually with the <tt>warp-cli</tt> command")
                     , "-a", "Shell"
                 ])
             }
@@ -46,8 +46,8 @@ QuickToggleModel {
                 connectProc.running = true
             } else {
                 Quickshell.execDetached(["notify-send", 
-                    Translation.tr("Cloudflare WARP"), 
-                    Translation.tr("Registration failed. Please inspect manually with the <tt>warp-cli</tt> command"),
+                    Translation.translate("Cloudflare WARP"), 
+                    Translation.translate("Registration failed. Please inspect manually with the <tt>warp-cli</tt> command"),
                     "-a", "Shell"
                 ])
             }
@@ -74,5 +74,5 @@ QuickToggleModel {
             }
         }
     }
-    tooltipText: Translation.tr("Cloudflare WARP (1.1.1.1)")
+    tooltipText: Translation.translate("Cloudflare WARP (1.1.1.1)")
 }

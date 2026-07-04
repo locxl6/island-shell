@@ -7,7 +7,7 @@ import qs.modules.common.functions
 import qs.modules.common.widgets
 
 QuickToggleModel {
-    name: Translation.tr("EasyEffects")
+    name: Translation.translate("EasyEffects")
 
     available: EasyEffects.available
     toggled: EasyEffects.active
@@ -26,5 +26,5 @@ QuickToggleModel {
         GlobalStates.sidebarRightOpen = false
     }
 
-    tooltipText: Translation.tr("EasyEffects | Right-click to configure")
+    tooltipText: Translation.translate("EasyEffects | Right-click to configure")
 }

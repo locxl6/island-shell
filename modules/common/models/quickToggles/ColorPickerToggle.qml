@@ -7,7 +7,7 @@ import qs.modules.common.functions
 import qs.modules.common.widgets
 
 QuickToggleModel {
-    name: Translation.tr("Color picker")
+    name: Translation.translate("Color picker")
     hasStatusText: false
     toggled: false
     icon: "colorize"
@@ -25,5 +25,5 @@ QuickToggleModel {
         }
     }
 
-    tooltipText: Translation.tr("Color picker")
+    tooltipText: Translation.translate("Color picker")
 }

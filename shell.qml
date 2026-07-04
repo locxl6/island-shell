@@ -6,6 +6,11 @@ import IslandBackend
 import qs.services
 import qs.modules.ii.bar
 import qs.modules.ii.sidebarRight
+import qs.modules.ii.lock
+import qs.modules.ii.polkit
+import qs.modules.ii.sessionScreen
+import qs.modules.ii.onScreenKeyboard
+import qs.modules.ii.screenCorners
 
 Scope {
     id: shellRoot
@@ -226,4 +231,11 @@ Scope {
 
     // end4 right sidebar (notification center + quick settings)
     SidebarRight {}
+
+    // end4 session modules
+    Lock {}
+    Polkit {}
+    SessionScreen {}
+    OnScreenKeyboard {}
+    ScreenCorners {}
 }

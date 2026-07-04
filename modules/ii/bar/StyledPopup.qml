@@ -13,11 +13,16 @@ LazyLoader {
     default property Item contentItem
     property real popupBackgroundMargin: 0
 
-    active: hoverTarget && hoverTarget.containsMouse
+    // ponytail: keep popup window loaded to avoid Wayland layer surface
+    // create/destroy flickering when island PanelWindow is also present.
+    // Original: active: hoverTarget && hoverTarget.containsMouse
+    active: true
 
     component: PanelWindow {
         id: popupWindow
         color: "transparent"
+        // ponytail: control visibility instead of load/unload
+        visible: root.hoverTarget && root.hoverTarget.containsMouse
 
         anchors.left: !Config.options.bar.vertical || (Config.options.bar.vertical && !Config.options.bar.bottom)
         anchors.right: Config.options.bar.vertical && Config.options.bar.bottom

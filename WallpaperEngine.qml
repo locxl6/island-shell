@@ -31,6 +31,7 @@ Scope {
         if (cfg.fps > 0) args.push("--fps", String(cfg.fps))
 
         // screen-root: render as wallpaper layer on specified screen(s)
+        // Args must follow --screen-root <screen> --bg <id> --scaling <mode> --clamp <mode>
         const screens = (cfg.screens && cfg.screens.length > 0)
             ? cfg.screens
             : [{ screen: cfg.screenRoot ?? "", background: cfg.background }]
@@ -40,14 +41,14 @@ Scope {
                 if (s.background && s.background.length > 0)
                     args.push("--bg", s.background)
                 if (s.scaling?.length > 0) args.push("--scaling", s.scaling)
-                if (s.clamping?.length > 0) args.push("--clamping", s.clamping)
+                if (s.clamping?.length > 0) args.push("--clamp", s.clamping)
             }
         }
 
         // fallback: if no screens configured, use background as positional arg
         if (screens.length === 0 || !screens[0].screen) {
             if (cfg.scaling?.length > 0) args.push("--scaling", cfg.scaling)
-            if (cfg.clamping?.length > 0) args.push("--clamping", cfg.clamping)
+            if (cfg.clamping?.length > 0) args.push("--clamp", cfg.clamping)
             args.push(cfg.background)
         }
 

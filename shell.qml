@@ -174,6 +174,9 @@ Scope {
         console.log("[Shell] onCompleted: shell root initializing");
         console.log(`[Shell] screens: ${Quickshell.screens.length} (${Quickshell.screens.map(s => s.name).join(", ")})`);
         console.log(`[Shell] shellDir: ${Quickshell.shellDir}`);
+        // Apply theme colors from generated colors.json
+        MaterialThemeLoader.reapplyTheme();
+        console.log("[Shell] MaterialThemeLoader reapplyTheme called");
         // Apply configurable accent color from UserConfig to StyleTokens
         StyleTokens.setAccentColor(UserConfig.accentColor);
         console.log(`[Shell] accent color applied: ${UserConfig.accentColor}`);

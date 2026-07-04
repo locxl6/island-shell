@@ -586,6 +586,22 @@ Singleton {
             property JsonObject wallpaperSelector: JsonObject {
                 property bool useSystemFileDialog: false
             }
+
+            property JsonObject wallpaperEngine: JsonObject {
+                property bool enabled: false
+                property string binary: "linux-wallpaperengine"
+                property string background: ""
+                property bool silent: true
+                property int volume: 0
+                property int fps: 30
+                property string scaling: "fill"
+                property string clamping: "clamp"
+                property string assetsDir: ""
+                property bool disableMouse: false
+                property bool disableParallax: false
+                property bool noFullscreenPause: false
+                property var properties: ({})
+            }
             
             property JsonObject windows: JsonObject {
                 property bool showTitlebar: true // Client-side decoration for shell apps

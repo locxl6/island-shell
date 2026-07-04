@@ -40,8 +40,11 @@ Scope {
                 args.push("--screen-root", s.screen)
                 if (s.background && s.background.length > 0)
                     args.push("--bg", s.background)
-                if (s.scaling?.length > 0) args.push("--scaling", s.scaling)
-                if (s.clamping?.length > 0) args.push("--clamp", s.clamping)
+                // Use per-screen value or fall back to top-level cfg
+                const scaling = s.scaling || cfg.scaling || ""
+                const clamp = s.clamping || cfg.clamping || ""
+                if (scaling.length > 0) args.push("--scaling", scaling)
+                if (clamp.length > 0) args.push("--clamp", clamp)
             }
         }
 

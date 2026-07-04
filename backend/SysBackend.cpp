@@ -559,6 +559,7 @@ QString SysBackend::findLyricsBackendExecutable() const {
     const QString pathExecutable = QStandardPaths::findExecutable("lyricsmpris");
     QStringList candidates = {
         envPath,
+        QStringLiteral("/usr/lib/qt6/qml/IslandBackend/bin/lyricsmpris"),
         QStringLiteral("/usr/share/tide-island/bin/lyricsmpris"),
         quickshellConfigDir + "/bin/lyricsmpris",
         homeDir + "/.local/bin/lyricsmpris",

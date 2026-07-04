@@ -232,7 +232,8 @@ Item { // Bar content region
                 Layout.fillWidth: false
 
                 implicitWidth: indicatorsRowLayout.implicitWidth + 10 * 2
-                implicitHeight: indicatorsRowLayout.implicitHeight + 5 * 2
+                // ponytail: removed implicitHeight — let RippleButton fill bar height naturally
+                // was: implicitHeight: indicatorsRowLayout.implicitHeight + 5 * 2 (caused thin background)
 
                 buttonRadius: Appearance.rounding.full
                 colBackground: barRightSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)

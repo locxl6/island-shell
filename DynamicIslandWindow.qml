@@ -1408,7 +1408,7 @@ PanelWindow {
                 islandContainer.swipeTransitionProgress
             )
             color: root.overviewContentVisible ? root.overviewCapsuleColor : StyleTokens.black
-            y: 2 // ponytail: aligned to bar, slight offset for visual balance
+            y: 1 // ponytail: aligned to bar, centered between top and bar content
             x: parent ? parent.width * userConfig.islandPositionX / 100 - width / 2 : 0
             clip: true
             width: displayedWidth

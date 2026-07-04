@@ -29,6 +29,14 @@ PanelWindow {
     readonly property var hyprMonitor: screen ? Hyprland.monitorFor(screen) : Hyprland.focusedMonitor
     readonly property string hyprMonitorName: hyprMonitor && hyprMonitor.name ? String(hyprMonitor.name) : ""
     readonly property bool monitorFocused: hyprMonitor ? hyprMonitor.focused : false
+
+    // ponytail: expose capsule width to shell root for bar integration
+    Binding {
+        when: root.monitorFocused && root.shellRootController
+        target: root.shellRootController
+        property: "islandCapsuleWidth"
+        value: Math.ceil(root.mainCapsule ? root.mainCapsule.width : 140)
+    }
     readonly property bool connectivityPromptActive: controlCenterLoader.item
         ? controlCenterLoader.item.hasConnectivityPrompt
         : false
@@ -91,7 +99,8 @@ PanelWindow {
             Math.ceil(root.controlCenterWindowHeight)
         )
         : Math.max(Math.ceil(4 + root.connectivityDetailHeight + 12), Math.ceil(root.controlCenterWindowHeight))
-    exclusiveZone: 4 + userConfig.islandHeight + 3
+    exclusiveZone: 0 // ponytail: was 4 + userConfig.islandHeight + 3, now 0 to float over bar
+    exclusionMode: ExclusionMode.Ignore
     aboveWindows: true
     focusable: islandContainer.wallpaperPickerLayerVisible
         || islandContainer.expandedPlayerKeyboardFocusRequested

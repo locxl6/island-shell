@@ -12,6 +12,9 @@ import qs.modules.common.functions
 Item { // Bar content region
     id: root
 
+    // ponytail: island capsule width, set by Bar.qml from shell root
+    property real islandCapsuleWidth: 140
+
     property var screen: root.QsWindow.window?.screen
     property var brightnessMonitor: Brightness.getMonitorForScreen(screen)
     property real useShortenedForm: (Appearance.sizes.barHellaShortenScreenWidthThreshold >= screen?.width) ? 2 : (Appearance.sizes.barShortenScreenWidthThreshold >= screen?.width) ? 1 : 0
@@ -89,6 +92,29 @@ Item { // Bar content region
                 colBackground: barLeftSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
             }
 
+            // ponytail: Workspaces moved here from middle section
+            BarGroup {
+                Layout.alignment: Qt.AlignVCenter
+                Layout.leftMargin: 4
+                padding: workspacesWidget.widgetPadding
+
+                Workspaces {
+                    id: workspacesWidget
+                    Layout.fillHeight: true
+                    MouseArea {
+                        // Right-click to toggle overview
+                        anchors.fill: parent
+                        acceptedButtons: Qt.RightButton
+
+                        onPressed: event => {
+                            if (event.button === Qt.RightButton) {
+                                GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
+                            }
+                        }
+                    }
+                }
+            }
+
             ActiveWindow {
                 Layout.leftMargin: 10 + (leftSidebarButton.visible ? 0 : Appearance.rounding.screenRounding)
                 Layout.rightMargin: Appearance.rounding.screenRounding
@@ -99,7 +125,7 @@ Item { // Bar content region
         }
     }
 
-    Row { // Middle section
+    Row { // Middle section — island placeholder + squeezable resources
         id: middleSection
         anchors {
             top: parent.top
@@ -124,34 +150,12 @@ Item { // Bar content region
             }
         }
 
-        VerticalBarSeparator {
-            visible: Config.options?.bar.borderless
-        }
-
-        BarGroup {
-            id: middleCenterGroup
+        // ponytail: island placeholder — width follows island capsule, squeezes left/right
+        Item {
+            id: islandPlaceholder
             anchors.verticalCenter: parent.verticalCenter
-            padding: workspacesWidget.widgetPadding
-
-            Workspaces {
-                id: workspacesWidget
-                Layout.fillHeight: true
-                MouseArea {
-                    // Right-click to toggle overview
-                    anchors.fill: parent
-                    acceptedButtons: Qt.RightButton
-
-                    onPressed: event => {
-                        if (event.button === Qt.RightButton) {
-                            GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
-                        }
-                    }
-                }
-            }
-        }
-
-        VerticalBarSeparator {
-            visible: Config.options?.bar.borderless
+            width: root.islandCapsuleWidth
+            height: parent.height
         }
 
         MouseArea {

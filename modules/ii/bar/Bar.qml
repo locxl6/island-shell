@@ -13,6 +13,8 @@ import qs.modules.common.widgets
 Scope {
     id: bar
     property bool showBarBackground: Config.options.bar.showBackground
+    // ponytail: island capsule width, passed from shell root for bar integration
+    property real islandCapsuleWidth: 140
 
     Variants {
         // For each monitor
@@ -103,6 +105,7 @@ Scope {
 
                     BarContent {
                         id: barContent
+                        islandCapsuleWidth: bar.islandCapsuleWidth
                         
                         implicitHeight: Appearance.sizes.barHeight
                         anchors {

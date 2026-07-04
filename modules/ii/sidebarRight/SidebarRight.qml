@@ -22,7 +22,10 @@ Scope {
         exclusiveZone: 0
         implicitWidth: sidebarWidth
         WlrLayershell.namespace: "quickshell:sidebarRight"
-        WlrLayershell.layer: WlrLayer.Overlay // ponytail: match island layer so sidebar isn't blocked by island's full-screen window
+        // ponytail: no explicit layer — end4 doesn't set one. Default (Top) sits below
+        // the island's Overlay window; the island is transparent + input-masked so the
+        // sidebar shows through and receives input. Setting Overlay here made the
+        // island's full-screen surface stack over the sidebar and hide it.
         WlrLayershell.keyboardFocus: GlobalStates.sidebarRightOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
         color: "transparent"
 
@@ -33,6 +36,7 @@ Scope {
         }
 
         onVisibleChanged: {
+            console.log(`[SidebarRight] onVisibleChanged: ${visible} layer=${WlrLayershell.layer}`)
             if (visible) {
                 GlobalFocusGrab.addDismissable(panelWindow);
             } else {

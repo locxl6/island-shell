@@ -134,7 +134,7 @@ Singleton {
                     }
                 }
                 property JsonObject palette: JsonObject {
-                    property string type: "auto" // Allowed: auto, scheme-content, scheme-expressive, scheme-fidelity, scheme-fruit-salad, scheme-monochrome, scheme-neutral, scheme-rainbow, scheme-tonal-spot
+                    property string type: "scheme-tonal-spot" // ponytail: was "auto", but matugen doesn't accept "auto" in color mode
                     property string accentColor: "#8095b5"
                 }
             }

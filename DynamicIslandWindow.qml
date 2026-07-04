@@ -40,7 +40,6 @@ PanelWindow {
             var widths = JSON.parse(JSON.stringify(root.shellRootController.islandCapsuleWidths))
             widths[name] = w
             root.shellRootController.islandCapsuleWidths = widths
-            console.log(`[Island] screen=${name} capsuleWidth=${w}`)
         }
     }
 

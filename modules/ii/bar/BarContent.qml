@@ -129,22 +129,45 @@ Item { // Bar content region
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
         }
+        // ponytail: RowLayout is not inside another layout here, so make its visual
+        // width follow its implicit content width instead of letting children get
+        // compressed into a zero-width layout.
+        width: implicitWidth
         spacing: 4
+        readonly property real maxCenterSideWidth: Math.max(0, (root.width - root.islandCapsuleWidth) / 2 - spacing * 2)
+        readonly property real balancedSideWidth: Math.max(leftCenterGroup.implicitWidth, rightCenterGroupContent.implicitWidth)
+
+        // ponytail: balance the row outside the visible groups so the placeholder
+        // stays centered on the real island while each group remains content-sized
+        // and close to the island.
+        Item {
+            Layout.preferredWidth: Math.max(0, middleSection.balancedSideWidth - leftCenterGroup.implicitWidth)
+            Layout.fillHeight: true
+        }
 
         BarGroup {
             id: leftCenterGroup
             Layout.alignment: Qt.AlignVCenter
+            clip: true
 
             Resources {
+                id: resourcesWidget
                 alwaysShowAllResources: root.useShortenedForm === 2
+                Layout.minimumWidth: implicitWidth
             }
 
             Media {
+                id: mediaWidget
                 visible: root.useShortenedForm < 2
+                // ponytail: cap long media text to the space left of the island;
+                // this preserves natural width for normal titles and elides/clips
+                // unusually long metadata before it reaches the island capsule.
+                Layout.maximumWidth: Math.max(0, middleSection.maxCenterSideWidth - resourcesWidget.implicitWidth - leftCenterGroup.padding * 2 - 4)
+                Layout.preferredWidth: Math.min(implicitWidth, Layout.maximumWidth)
             }
         }
 
-        // ponytail: island placeholder — width follows island capsule, squeezes left/right
+        // ponytail: island placeholder — width follows island capsule exactly
         Item {
             id: islandPlaceholder
             Layout.alignment: Qt.AlignVCenter
@@ -159,17 +182,27 @@ Item { // Bar content region
             ClockWidget {
                 showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
                 Layout.alignment: Qt.AlignVCenter
+                Layout.minimumWidth: implicitWidth
             }
 
             UtilButtons {
                 visible: (Config.options.bar.verbose && root.useShortenedForm === 0)
                 Layout.alignment: Qt.AlignVCenter
+                Layout.minimumWidth: implicitWidth
             }
 
             BatteryIndicator {
                 visible: (root.useShortenedForm < 2 && Battery.available)
                 Layout.alignment: Qt.AlignVCenter
+                Layout.minimumWidth: implicitWidth
             }
+        }
+
+        // ponytail: counterpart to the leading balance item; this adds only outer
+        // empty layout space, never a gap between right-side tools and the island.
+        Item {
+            Layout.preferredWidth: Math.max(0, middleSection.balancedSideWidth - rightCenterGroupContent.implicitWidth)
+            Layout.fillHeight: true
         }
     }
 

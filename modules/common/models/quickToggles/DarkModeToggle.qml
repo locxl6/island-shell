@@ -14,11 +14,9 @@ QuickToggleModel {
     icon: "contrast"
     
     mainAction: () => {
-        if (Appearance.m3colors.darkmode) {
-            Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "light", "--noswitch"]);
-        } else {
-            Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "dark", "--noswitch"]);
-        }
+        // ponytail: share the bar button path so shell colors are regenerated
+        // even when full app/shell wallpaper theming is disabled in settings.
+        MaterialThemeLoader.toggleLightDark()
     }
 
     tooltipText: Translation.translate("Dark Mode")

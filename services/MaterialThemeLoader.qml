@@ -97,7 +97,9 @@ Singleton {
 
     function toggleLightDark() {
         const currentlyDark = Appearance.m3colors.darkmode;
-        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", currentlyDark ? "light" : "dark", "--noswitch"]);
+        // ponytail: force only this color-generation run to update Quickshell's
+        // colors.json; keep the user's persistent wallpaperTheming setting as-is.
+        Quickshell.execDetached(["env", "II_FORCE_SHELL_THEME=1", Directories.wallpaperSwitchScriptPath, "--mode", currentlyDark ? "light" : "dark", "--noswitch"]);
         // ponytail: reapply after switchwall has time to regenerate colors.json
         toggleReapplyTimer.restart()
     }

@@ -12,7 +12,6 @@ Scope { // Scope
     id: root
     property bool detach: false
     property bool pin: false
-    property bool keyboardFocusExclusive: false
     property Component contentComponent: SidebarLeftContent {}
     property Item sidebarContent
 
@@ -68,14 +67,12 @@ Scope { // Scope
 
     onDetachChanged: {
         if (root.detach) {
-            root.keyboardFocusExclusive = false;
             GlobalFocusGrab.removeDismissable(sidebarLoader.item) // Remove sidebar from the focus grab system
             sidebarContent.parent = null; // Detach content from sidebar
             sidebarLoader.active = false; // Unload sidebar
             detachedSidebarLoader.active = true; // Load detached window
             detachedSidebarLoader.item.contentParent.children = [sidebarContent];
         } else {
-            root.keyboardFocusExclusive = false;
             sidebarContent.parent = null; // Detach content from window
             detachedSidebarLoader.active = false; // Unload detached window
             sidebarLoader.active = true; // Load sidebar
@@ -103,10 +100,8 @@ Scope { // Scope
             exclusiveZone: root.pin ? sidebarWidth : 0
             implicitWidth: Appearance.sizes.sidebarWidthExtended + Appearance.sizes.elevationMargin
             WlrLayershell.namespace: "quickshell:sidebarLeft"
-            // ponytail: keep OnDemand normally so click-outside dismissal works,
-            // but use Exclusive while a text input is focused so Wayland IMEs
-            // can commit preedit text into the sidebar.
-            WlrLayershell.keyboardFocus: root.keyboardFocusExclusive ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.OnDemand
+            // Hyprland 0.49: OnDemand is Exclusive, Exclusive just breaks click-outside-to-close
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
             color: "transparent"
 
             anchors {
@@ -123,7 +118,6 @@ Scope { // Scope
                 if (visible) {
                     GlobalFocusGrab.addDismissable(panelWindow);
                 } else {
-                    root.keyboardFocusExclusive = false;
                     GlobalFocusGrab.removeDismissable(panelWindow);
                 }
             }

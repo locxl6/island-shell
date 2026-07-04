@@ -94,9 +94,7 @@ Item {
 
         Component {
             id: aiChat
-            AiChat {
-                scopeRoot: root.scopeRoot
-            }
+            AiChat {}
         }
         Component {
             id: translator

@@ -73,7 +73,8 @@ MaterialShape { // App icon
     }
     Loader {
         id: notifImageLoader
-        active: root.image != ""
+        // ponytail: ignore image://icon/ URLs — they're app icons, not notification images
+        active: root.image != "" && !root.image.startsWith("image://icon/")
         anchors.fill: parent
         sourceComponent: Item {
             anchors.fill: parent

@@ -122,7 +122,7 @@ Item { // Bar content region
         }
     }
 
-    Row { // Middle section — island placeholder + squeezable resources
+    RowLayout { // Middle section — island placeholder + natural-width groups
         id: middleSection
         anchors {
             top: parent.top
@@ -133,11 +133,10 @@ Item { // Bar content region
 
         BarGroup {
             id: leftCenterGroup
-            anchors.verticalCenter: parent.verticalCenter
+            Layout.alignment: Qt.AlignVCenter
 
             Resources {
                 alwaysShowAllResources: root.useShortenedForm === 2
-                Layout.fillWidth: root.useShortenedForm === 2
             }
 
             Media {
@@ -148,34 +147,28 @@ Item { // Bar content region
         // ponytail: island placeholder — width follows island capsule, squeezes left/right
         Item {
             id: islandPlaceholder
-            anchors.verticalCenter: parent.verticalCenter
-            width: root.islandCapsuleWidth
-            height: parent.height
+            Layout.alignment: Qt.AlignVCenter
+            Layout.preferredWidth: root.islandCapsuleWidth
+            Layout.fillHeight: true
         }
 
-        Item {
-            id: rightCenterGroup
-            anchors.verticalCenter: parent.verticalCenter
-            implicitWidth: rightCenterGroupContent.implicitWidth
-            implicitHeight: rightCenterGroupContent.implicitHeight
+        BarGroup {
+            id: rightCenterGroupContent
+            Layout.alignment: Qt.AlignVCenter
 
-            BarGroup {
-                id: rightCenterGroupContent
+            ClockWidget {
+                showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
+                Layout.alignment: Qt.AlignVCenter
+            }
 
-                ClockWidget {
-                    showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
-                    Layout.alignment: Qt.AlignVCenter
-                }
+            UtilButtons {
+                visible: (Config.options.bar.verbose && root.useShortenedForm === 0)
+                Layout.alignment: Qt.AlignVCenter
+            }
 
-                UtilButtons {
-                    visible: (Config.options.bar.verbose && root.useShortenedForm === 0)
-                    Layout.alignment: Qt.AlignVCenter
-                }
-
-                BatteryIndicator {
-                    visible: (root.useShortenedForm < 2 && Battery.available)
-                    Layout.alignment: Qt.AlignVCenter
-                }
+            BatteryIndicator {
+                visible: (root.useShortenedForm < 2 && Battery.available)
+                Layout.alignment: Qt.AlignVCenter
             }
         }
     }

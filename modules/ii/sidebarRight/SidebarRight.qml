@@ -52,7 +52,13 @@ Scope {
 
         Loader {
             id: sidebarContentLoader
-            active: GlobalStates.sidebarRightOpen || Config?.options.sidebar.keepRightSidebarLoaded
+            // ponytail: always active to preload content. When active was gated on
+            // sidebarRightOpen, the PanelWindow became visible before the Loader
+            // finished instantiating SidebarRightContent, so the sidebar flashed
+            // small/empty then expanded. Preloading keeps content ready; the
+            // PanelWindow's visible flag still controls actual show/hide.
+            active: true
+            onStatusChanged: console.log(`[SidebarRight] loader status: ${status} (1=Loading,2=Ready,3=Error)`)
             anchors {
                 fill: parent
                 margins: Appearance.sizes.hyprlandGapsOut

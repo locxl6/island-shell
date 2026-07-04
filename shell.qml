@@ -4,6 +4,7 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import IslandBackend
 import qs.services
+import qs.modules.ii.bar
 
 Scope {
     id: shellRoot
@@ -203,6 +204,19 @@ Scope {
 
             screen: modelData
             shellRootController: shellRoot
+        }
+    }
+
+    // end4 top bar — one per screen
+    Variants {
+        id: barVariants
+
+        model: Quickshell.screens
+
+        Bar {
+            required property var modelData
+
+            screen: modelData
         }
     }
 }

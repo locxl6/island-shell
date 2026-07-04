@@ -591,6 +591,8 @@ Singleton {
                 property bool enabled: false
                 property string binary: "linux-wallpaperengine"
                 property string background: ""
+                property string screenRoot: ""
+                property var screens: []
                 property bool silent: true
                 property int volume: 0
                 property int fps: 30

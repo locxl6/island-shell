@@ -29,8 +29,26 @@ Scope {
         if (cfg.silent) args.push("--silent")
         if (cfg.volume !== undefined) args.push("--volume", String(cfg.volume))
         if (cfg.fps > 0) args.push("--fps", String(cfg.fps))
-        if (cfg.scaling?.length > 0) args.push("--scaling", cfg.scaling)
-        if (cfg.clamping?.length > 0) args.push("--clamping", cfg.clamping)
+
+        // screen-root: render as wallpaper layer on specified screen(s)
+        const screens = cfg.screens ?? [{ screen: cfg.screenRoot ?? "", background: cfg.background }]
+        for (const s of screens) {
+            if (s.screen && s.screen.length > 0) {
+                args.push("--screen-root", s.screen)
+                if (s.background && s.background.length > 0)
+                    args.push("--bg", s.background)
+                if (s.scaling?.length > 0) args.push("--scaling", s.scaling)
+                if (s.clamping?.length > 0) args.push("--clamping", s.clamping)
+            }
+        }
+
+        // fallback: if no screens configured, use background as positional arg
+        if (screens.length === 0 || !screens[0].screen) {
+            if (cfg.scaling?.length > 0) args.push("--scaling", cfg.scaling)
+            if (cfg.clamping?.length > 0) args.push("--clamping", cfg.clamping)
+            args.push(cfg.background)
+        }
+
         if (cfg.assetsDir?.length > 0) args.push("--assets-dir", cfg.assetsDir)
         if (cfg.disableMouse) args.push("--disable-mouse")
         if (cfg.disableParallax) args.push("--disable-parallax")
@@ -40,7 +58,6 @@ Scope {
         for (const name in props)
             args.push("--set-property", `${name}=${props[name]}`)
 
-        args.push(cfg.background)
         return args
     }
 
@@ -78,5 +95,14 @@ Scope {
         }
     }
 
-    Component.onCompleted: refresh("component-completed")
+    Component.onCompleted: {
+        // Wait for Config to load before starting
+        if (Config.ready) refresh("component-completed")
+    }
+    Connections {
+        target: Config
+        function onReadyChanged() {
+            if (Config.ready) refresh("config-ready")
+        }
+    }
 }

@@ -17,6 +17,9 @@ Singleton {
 
     function reapplyTheme() {
         themeFileView.reload()
+        // ponytail: also poll after startup — onLoadedChanged may not fire if already loaded
+        themePollTimer.pollCount = 0
+        themePollTimer.restart()
     }
 
     function applyColors(fileContent) {
@@ -81,10 +84,10 @@ Singleton {
         themePollTimer.restart();
     }
 
-    // ponytail: poll colors.json for changes after toggle (matugen writes atomically)
+    // ponytail: poll colors.json for changes (matugen writes atomically, FileView may miss it)
     Timer {
         id: themePollTimer
-        interval: 2000
+        interval: 1000
         repeat: true
         property int pollCount: 0
         onTriggered: {
@@ -93,7 +96,7 @@ Singleton {
             const content = themeFileView.text()
             if (content && content.length > 0) {
                 root.applyColors(content)
-                console.log(`[MaterialThemeLoader] poll #${pollCount}: applied colors, darkmode=${Appearance.m3colors.darkmode}`)
+                console.log(`[MaterialThemeLoader] poll #${pollCount}: darkmode=${Appearance.m3colors.darkmode} bg=${Appearance.m3colors.m3background}`)
             }
             if (pollCount >= 3) {
                 pollCount = 0

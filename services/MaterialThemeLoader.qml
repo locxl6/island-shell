@@ -76,6 +76,30 @@ Singleton {
     function toggleLightDark() {
         const currentlyDark = Appearance.m3colors.darkmode;
         Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", currentlyDark ? "light" : "dark", "--noswitch"]);
+        // ponytail: FileView watchChanges may not detect atomic file writes by matugen.
+        // Poll for changes after a delay.
+        themePollTimer.restart();
+    }
+
+    // ponytail: poll colors.json for changes after toggle (matugen writes atomically)
+    Timer {
+        id: themePollTimer
+        interval: 2000
+        repeat: true
+        property int pollCount: 0
+        onTriggered: {
+            pollCount++
+            themeFileView.reload()
+            const content = themeFileView.text()
+            if (content && content.length > 0) {
+                root.applyColors(content)
+                console.log(`[MaterialThemeLoader] poll #${pollCount}: applied colors, darkmode=${Appearance.m3colors.darkmode}`)
+            }
+            if (pollCount >= 3) {
+                pollCount = 0
+                running = false
+            }
+        }
     }
 
     GlobalShortcut {

@@ -38,9 +38,14 @@ PanelWindow {
         value: Math.ceil(mainCapsule.width)
     }
 
-    // ponytail: debug — log island window position
-    onYChanged: console.log(`[Island] window y=${y} exclusiveZone=${exclusiveZone} exclusionMode=${exclusionMode}`)
-    onWidthChanged: if (monitorFocused) console.log(`[Island] window width=${width} capsuleWidth=${mainCapsule ? mainCapsule.width : -1}`)
+    // ponytail: debug — log island capsule width changes
+    Connections {
+        target: mainCapsule
+        function onWidthChanged() {
+            if (root.monitorFocused)
+                console.log(`[Island] capsule width=${mainCapsule.width} → shellRoot.islandCapsuleWidth=${root.shellRootController?.islandCapsuleWidth}`)
+        }
+    }
     readonly property bool connectivityPromptActive: controlCenterLoader.item
         ? controlCenterLoader.item.hasConnectivityPrompt
         : false

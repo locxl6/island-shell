@@ -3,6 +3,7 @@ import QtQuick.Shapes
 import Quickshell.Bluetooth
 import Quickshell.Io
 import IslandBackend
+import qs.services
 
 Item {
     id: controlCenter
@@ -392,10 +393,15 @@ Item {
             return;
 
         focusBusy = true;
+        // ponytail: replaced swaync-client with end4 Notifications.silent
+        focusEnabled = !focusEnabled;
+        Notifications.silent = focusEnabled;
+        focusBusy = false;
+        focusModeChanged(focusEnabled);
         if (focusEnabled)
-            focusDisableProcess.running = true;
+            requestNotification("Focus", "Focus enabled", "Notifications paused");
         else
-            focusEnableProcess.running = true;
+            requestNotification("Focus", "Focus disabled", "Notifications resumed");
     }
 
     function clearWifiPrompt() {
@@ -874,7 +880,8 @@ Item {
         SystemServices.requestBrightness();
         SystemServices.requestVolume();
         refreshBatteryModeState();
-        focusStateProcess.running = true;
+        // ponytail: replaced swaync-client --get-dnd with direct binding
+        focusEnabled = Notifications.silent;
     }
 
     Behavior on opacity {
@@ -909,20 +916,6 @@ Item {
             id: batteryDrawerProgressAnimation
             duration: 240
             easing.type: Easing.OutCubic
-        }
-    }
-
-    Process {
-        id: focusStateProcess
-        command: ["swaync-client", "--get-dnd"]
-        running: false
-
-        stdout: SplitParser {
-            onRead: function(line) {
-                const enabled = line.trim().toLowerCase() === "true";
-                controlCenter.focusEnabled = enabled;
-                controlCenter.focusModeChanged(enabled);
-            }
         }
     }
 
@@ -982,33 +975,8 @@ Item {
         }
     }
 
-    Process {
-        id: focusEnableProcess
-        command: ["swaync-client", "-dn"]
-        running: false
-
-        onExited: function(exitCode) {
-            controlCenter.focusBusy = false;
-            controlCenter.focusEnabled = exitCode === 0;
-            controlCenter.focusModeChanged(controlCenter.focusEnabled);
-            if (exitCode === 0)
-                controlCenter.requestNotification("Focus", "Focus enabled", "Notifications paused");
-        }
-    }
-
-    Process {
-        id: focusDisableProcess
-        command: ["swaync-client", "-df"]
-        running: false
-
-        onExited: function(exitCode) {
-            controlCenter.focusBusy = false;
-            controlCenter.focusEnabled = false;
-            controlCenter.focusModeChanged(false);
-            if (exitCode === 0)
-                controlCenter.requestNotification("Focus", "Focus disabled", "");
-        }
-    }
+    // ponytail: removed focusEnableProcess (swaync-client -dn) — replaced by Notifications.silent in toggleFocus()
+    // ponytail: removed focusDisableProcess (swaync-client -df) — replaced by Notifications.silent in toggleFocus()
 
     Connections {
         target: SystemServices

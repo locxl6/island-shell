@@ -26,7 +26,15 @@ Singleton {
         })) ?? []
         property bool popup: false
         property bool isTransient: notification?.hints.transient ?? false
-        property string appIcon: notification?.appIcon ?? ""
+        property string appIcon: {
+            // ponytail: Quickshell puts icon name in image field as image://icon/<name>
+            // Extract it to appIcon so NotificationAppIcon can use IconImage
+            var rawIcon = notification?.appIcon ?? ""
+            if (rawIcon && rawIcon.length > 0) return rawIcon
+            var img = notification?.image ?? ""
+            if (img.startsWith("image://icon/")) return img.substring("image://icon/".length)
+            return ""
+        }
         property string appName: notification?.appName ?? ""
         property string body: notification?.body ?? ""
         property string image: notification?.image ?? ""

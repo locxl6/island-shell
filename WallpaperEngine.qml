@@ -108,4 +108,12 @@ Scope {
             if (Config.ready) refresh("config-ready")
         }
     }
+
+    // Restart when wallpaper config changes
+    Connections {
+        target: Config.options?.wallpaperEngine ?? null
+        function onEnabledChanged() { refresh("config-enabled-changed") }
+        function onBackgroundChanged() { refresh("config-background-changed") }
+        function onScreenRootChanged() { refresh("config-screenRoot-changed") }
+    }
 }

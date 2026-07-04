@@ -32,11 +32,15 @@ PanelWindow {
 
     // ponytail: expose capsule width to shell root for bar integration
     Binding {
-        when: root.monitorFocused && root.shellRootController
+        when: root.monitorFocused && root.shellRootController && mainCapsule
         target: root.shellRootController
         property: "islandCapsuleWidth"
-        value: Math.ceil(root.mainCapsule ? root.mainCapsule.width : 140)
+        value: Math.ceil(mainCapsule.width)
     }
+
+    // ponytail: debug — log island window position
+    onYChanged: console.log(`[Island] window y=${y} exclusiveZone=${exclusiveZone} exclusionMode=${exclusionMode}`)
+    onWidthChanged: if (monitorFocused) console.log(`[Island] window width=${width} capsuleWidth=${mainCapsule ? mainCapsule.width : -1}`)
     readonly property bool connectivityPromptActive: controlCenterLoader.item
         ? controlCenterLoader.item.hasConnectivityPrompt
         : false

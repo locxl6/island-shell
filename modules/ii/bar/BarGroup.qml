@@ -1,6 +1,7 @@
 import qs.modules.common
 import QtQuick
 import QtQuick.Layouts
+import qs.modules.common.functions
 
 Item {
     id: root
@@ -9,7 +10,6 @@ Item {
     implicitWidth: vertical ? Appearance.sizes.baseVerticalBarWidth : (gridLayout.implicitWidth + padding * 2)
     implicitHeight: vertical ? (gridLayout.implicitHeight + padding * 2) : Appearance.sizes.baseBarHeight
     default property alias items: gridLayout.children
-
     Rectangle {
         id: background
         anchors {
@@ -22,7 +22,6 @@ Item {
         color: Config.options?.bar.borderless ? "transparent" : (Appearance.m3colors.darkmode ? Appearance.colors.colLayer1 : ColorUtils.mix(Appearance.colors.colLayer1, Appearance.colors.colOnLayer1, 0.06))
         radius: Appearance.rounding.small
     }
-
     GridLayout {
         id: gridLayout
         columns: root.vertical ? 1 : -1

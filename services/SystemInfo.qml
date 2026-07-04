@@ -9,6 +9,6 @@ Singleton {
     property string distro: ""
     Component.onCompleted: {
         // Try to get username from environment
-        username = Qt.environmentVariable("USER") || ""
+        username = Qt.env("USER") || ""
     }
 }

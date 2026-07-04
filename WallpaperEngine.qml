@@ -31,7 +31,9 @@ Scope {
         if (cfg.fps > 0) args.push("--fps", String(cfg.fps))
 
         // screen-root: render as wallpaper layer on specified screen(s)
-        const screens = cfg.screens ?? [{ screen: cfg.screenRoot ?? "", background: cfg.background }]
+        const screens = (cfg.screens && cfg.screens.length > 0)
+            ? cfg.screens
+            : [{ screen: cfg.screenRoot ?? "", background: cfg.background }]
         for (const s of screens) {
             if (s.screen && s.screen.length > 0) {
                 args.push("--screen-root", s.screen)

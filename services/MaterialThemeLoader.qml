@@ -16,23 +16,31 @@ Singleton {
     property string filePath: Directories.generatedMaterialThemePath
 
     function reapplyTheme() {
+        // ponytail: FileView.reload() is async and onLoadedChanged doesn't fire if already loaded.
+        // Force reload then read text after a delay to let async read complete.
         themeFileView.reload()
-        // ponytail: reload() is async. onLoadedChanged doesn't fire if already loaded.
-        // onTextChanged fires when content changes after reload completes.
+        reapplyTimer.restart()
     }
 
     function applyColors(fileContent) {
-        if (!fileContent || fileContent.length === 0) return
-        const json = JSON.parse(fileContent)
-        for (const key in json) {
-            if (json.hasOwnProperty(key)) {
-                const camelCaseKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase())
-                const m3Key = `m3${camelCaseKey}`
-                Appearance.m3colors[m3Key] = json[key]
-            }
+        if (!fileContent || fileContent.length === 0) {
+            console.warn("[MaterialThemeLoader] applyColors: empty content")
+            return
         }
-        Appearance.m3colors.darkmode = (Appearance.m3colors.m3background.hslLightness < 0.5)
-        console.log(`[MaterialThemeLoader] applyColors: darkmode=${Appearance.m3colors.darkmode} bg=${Appearance.m3colors.m3background}`)
+        try {
+            const json = JSON.parse(fileContent)
+            for (const key in json) {
+                if (json.hasOwnProperty(key)) {
+                    const camelCaseKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase())
+                    const m3Key = `m3${camelCaseKey}`
+                    Appearance.m3colors[m3Key] = json[key]
+                }
+            }
+            Appearance.m3colors.darkmode = (Appearance.m3colors.m3background.hslLightness < 0.5)
+            console.log(`[MaterialThemeLoader] applyColors: darkmode=${Appearance.m3colors.darkmode} bg=${Appearance.m3colors.m3background}`)
+        } catch (e) {
+            console.warn(`[MaterialThemeLoader] applyColors: parse error: ${e}`)
+        }
     }
 
     function resetFilePathNextTime() {
@@ -47,6 +55,16 @@ Singleton {
             root.filePath = ""
             root.filePath = Directories.generatedMaterialThemePath
             resetFilePathNextWallpaperChange.enabled = false
+        }
+    }
+
+    // ponytail: delay reading text() after reload() to let async read complete
+    Timer {
+        id: reapplyTimer
+        interval: 200
+        repeat: false
+        onTriggered: {
+            root.applyColors(themeFileView.text())
         }
     }
 
@@ -69,21 +87,36 @@ Singleton {
             delayedFileRead.start()
         }
         onLoadedChanged: {
-            const fileContent = themeFileView.text()
-            root.applyColors(fileContent)
+            root.applyColors(themeFileView.text())
         }
-        // ponytail: onTextChanged fires when reload() completes and content changes,
-        // even if already loaded (onLoadedChanged won't fire in that case)
-        onTextChanged: {
-            delayedFileRead.start()
+        onLoadFailed: {
+            console.warn("[MaterialThemeLoader] load failed, will retry on wallpaper change")
+            root.resetFilePathNextTime()
         }
-        onLoadFailed: root.resetFilePathNextTime();
     }
 
     function toggleLightDark() {
         const currentlyDark = Appearance.m3colors.darkmode;
         Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", currentlyDark ? "light" : "dark", "--noswitch"]);
-        // ponytail: FileView.onTextChanged + onFileChanged will detect colors.json change
+        // ponytail: reapply after switchwall has time to regenerate colors.json
+        toggleReapplyTimer.restart()
+    }
+
+    // ponytail: reapply theme after dark/light toggle (switchwall needs ~1s to regenerate)
+    Timer {
+        id: toggleReapplyTimer
+        interval: 1500
+        repeat: true
+        property int count: 0
+        onTriggered: {
+            count++
+            themeFileView.reload()
+            root.applyColors(themeFileView.text())
+            if (count >= 3) {
+                count = 0
+                running = false
+            }
+        }
     }
 
     GlobalShortcut {

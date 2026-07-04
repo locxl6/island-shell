@@ -43,12 +43,26 @@ Item {
     }
 
     function closeOverflowMenu() {
+        root.trayOverflowOpen = false;
         focusGrab.active = false;
     }
 
     onTrayOverflowOpenChanged: {
         if (root.trayOverflowOpen) {
-            root.grabFocus();
+            // ponytail: wait for the StyledPopup PanelWindow to become visible
+            // before HyprlandFocusGrab inspects its window list.
+            overflowFocusTimer.restart();
+        } else {
+            overflowFocusTimer.stop();
+        }
+    }
+
+    Timer {
+        id: overflowFocusTimer
+        interval: 0
+        repeat: false
+        onTriggered: {
+            if (root.trayOverflowOpen) root.grabFocus();
         }
     }
 
@@ -104,7 +118,9 @@ Item {
             StyledPopup {
                 id: overflowPopup
                 hoverTarget: trayOverflowButton
-                active: root.trayOverflowOpen && root.unpinnedItems.length > 0
+                // ponytail: tray overflow is click-state driven, not hover-state
+                // driven. Keep the popup visible while trayOverflowOpen is true.
+                forceVisible: root.trayOverflowOpen && root.unpinnedItems.length > 0
 
                 GridLayout {
                     id: trayOverflowLayout

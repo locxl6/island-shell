@@ -117,6 +117,9 @@ Item { // Bar content region
                 Layout.rightMargin: Appearance.rounding.screenRounding
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                // ponytail: long window titles must not force the left section
+                // past middleSection when the island changes width.
+                Layout.minimumWidth: 0
                 visible: root.useShortenedForm === 0
             }
         }

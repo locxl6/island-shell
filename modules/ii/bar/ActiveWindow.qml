@@ -9,6 +9,9 @@ import Quickshell.Hyprland
 
 Item {
     id: root
+    // ponytail: keep long app/title text inside the left-section allocation.
+    // RowLayout can shrink this item; clipped text must not paint over center groups.
+    clip: true
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.QsWindow.window?.screen)
     readonly property Toplevel activeWindow: ToplevelManager.activeToplevel
 
@@ -31,6 +34,7 @@ Item {
             font.pixelSize: Appearance.font.pixelSize.smaller
             color: Appearance.colors.colSubtext
             elide: Text.ElideRight
+            maximumLineCount: 1
             text: root.focusingThisMonitor && root.activeWindow?.activated && root.biggestWindow ? 
                 root.activeWindow?.appId :
                 (root.biggestWindow?.class) ?? Translation.translate("Desktop")
@@ -42,6 +46,7 @@ Item {
             font.pixelSize: Appearance.font.pixelSize.small
             color: Appearance.colors.colOnLayer0
             elide: Text.ElideRight
+            maximumLineCount: 1
             text: root.focusingThisMonitor && root.activeWindow?.activated && root.biggestWindow ? 
                 root.activeWindow?.title :
                 (root.biggestWindow?.title) ?? `${Translation.translate("Workspace")} ${monitor?.activeWorkspace?.id ?? 1}`

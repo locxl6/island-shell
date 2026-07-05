@@ -13,6 +13,19 @@ MouseArea {
     id: root
     required property SystemTrayItem item
     property bool targetMenuOpen: false
+    readonly property string trayIconSource: root.item.icon ?? ""
+    readonly property string trayThemeIconName: {
+        const prefix = "image://icon/";
+        if (!root.trayIconSource.startsWith(prefix)) return "";
+        const iconRequest = root.trayIconSource.substring(prefix.length);
+        if (iconRequest.includes("?")) return "";
+        return decodeURIComponent(iconRequest);
+    }
+    // ponytail: Quickshell's tray icon provider returns the black/purple
+    // missingPixmap when a tray item advertises a theme icon that this icon
+    // theme does not have, e.g. Fcitx "input-keyboard-symbolic".
+    readonly property bool trayThemeIconMissing: root.trayThemeIconName.length > 0 && !Quickshell.hasThemeIcon(root.trayThemeIconName)
+    readonly property bool useFallbackIcon: root.trayIconSource.length === 0 || root.trayThemeIconMissing
 
     signal menuOpened(qsWindow: var)
     signal menuClosed()
@@ -70,15 +83,27 @@ MouseArea {
 
     IconImage {
         id: trayIcon
-        visible: !Config.options.tray.monochromeIcons
-        source: root.item.icon
+        visible: !root.useFallbackIcon && !Config.options.tray.monochromeIcons
+        source: root.useFallbackIcon ? "" : root.trayIconSource
         anchors.centerIn: parent
         width: parent.width
         height: parent.height
     }
 
+    MaterialSymbol {
+        visible: root.useFallbackIcon
+        anchors.centerIn: parent
+        width: parent.width
+        height: parent.height
+        iconSize: Math.min(parent.width, parent.height) * 0.9
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        text: root.trayThemeIconName.includes("keyboard") || root.item.id.toLowerCase().includes("fcitx") ? "keyboard" : "extension"
+        color: Config.options.tray.monochromeIcons ? ColorUtils.transparentize(Appearance.colors.colOnLayer0, 0.9) : Appearance.colors.colOnLayer2
+    }
+
     Loader {
-        active: Config.options.tray.monochromeIcons
+        active: !root.useFallbackIcon && Config.options.tray.monochromeIcons
         anchors.fill: trayIcon
         sourceComponent: Item {
             Desaturate {
